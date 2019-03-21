@@ -9,7 +9,7 @@ import Register from './auth/Register'
 import { Provider } from 'react-redux'
 import store from './store'
 import jwt_decode from 'jwt-decode'
-import { setCurrentUser } from './actions/authAction'
+import { setCurrentUser, logoutUser } from './actions/authAction'
 import { setAuthToken } from './utils/setAuthToken'
 
 // Save userInfo in localStorage until user is logged-in
@@ -20,6 +20,13 @@ if (localStorage.jwtToken) {
   const decoded = jwt_decode(localStorage.jwtToken)
   // dispath action to set the current user
   store.dispatch(setCurrentUser(decoded))
+
+  // Logout user when token expires
+  const currentTime = Date.now() / 1000
+  if (decoded.exp < currentTime) {
+    store.dispatch(logoutUser())
+    window.location.href = '/login'
+  }
 }
 
 class App extends Component {
@@ -42,6 +49,10 @@ class App extends Component {
             <Route exact path='/register' component={Navbar} />
             <Route exact path='/register' component={Register} />
             <Route exact path='/register' component={Footer} />
+
+            {/* DASHBOARD ROUTE COMPONENTS */}
+            <Route exact path='/dashboard' component={Navbar} />
+            <Route exact path='/dashboard' component={Footer} />
           </div>
         </Router>
       </Provider>

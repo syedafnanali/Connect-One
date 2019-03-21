@@ -31,7 +31,7 @@ export const loginUser = userData => dispatch => {
       console.log(res.data)
       setAuthToken(token)
 
-      // Decode token 
+      // Decode token
       const decoded = jwt_decode(token)
       dispatch(setCurrentUser(decoded))
     })
@@ -50,10 +50,11 @@ export const setCurrentUser = decoded => ({
   payload: decoded
 })
 
-export const logoutUser = ()=>dispatch=>{
+export const logoutUser = () => dispatch => {
   // Remove token from localStorage
   localStorage.removeItem('jwtToken')
   // Remove auth header for future requests
   setAuthToken(false)
-
+// Set isAuthenticated to false by sending an empty object
+  dispatch(setCurrentUser({}))
 }
